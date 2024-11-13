@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('phone_number')->unique();
+            $table->string('phone')->unique();
             $table->string('address');
             $table->string('emergency_type')->nullable();
             $table->longText('emergency_details')->nullable();
@@ -24,7 +24,7 @@ return new class extends Migration
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'))->nullable();
             $table->timestamp('updated_at')->nullable();
 
-            $table->index('phone_number', 'idx_phone_number');
+            $table->index('phone', 'idx_phone');
 
         });
 
