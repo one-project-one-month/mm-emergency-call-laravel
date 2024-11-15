@@ -50,7 +50,7 @@ class UserController extends Controller
 
         $validatedData = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:255',
+            'phone' => 'required|string|max:255|unique:users,phone,' . $id,
             // 'email' => 'required|string|email|max:255|unique:users,email,' . $id,
             // 'password' => 'required|string|min:8',
             'address' => 'required|string',
