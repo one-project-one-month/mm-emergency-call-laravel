@@ -21,8 +21,8 @@ return new class extends Migration
             $table->string('status');
             $table->timestamp('response_time')->nullable();
             $table->string('notes')->nullable();
-            $table->string('state')->nullable();
-            $table->string('township')->nullable();
+            $table->string('state');
+            $table->string('township');
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'))->nullable();
             $table->timestamp('updated_at')->nullable();
 
