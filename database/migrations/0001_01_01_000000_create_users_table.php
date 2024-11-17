@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('emergency_type')->nullable();
             $table->longText('emergency_details')->nullable();
             $table->string('state')->nullable();
-            $table->string('township')->nullable();
+            $table->string('township')->nullable(); 
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'))->nullable();
             $table->timestamp('updated_at')->nullable();
 

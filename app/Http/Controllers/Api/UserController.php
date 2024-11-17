@@ -44,6 +44,7 @@ class UserController extends Controller
         $user = User::where('id', $id)->first();
         if (!$user) {
             return response()->json([
+                'status' => False,
                 'message' => "User is not found",
             ], 400);
         }
@@ -63,7 +64,7 @@ class UserController extends Controller
             return response()->json(['status' => false, 'message' => 'validation error', 'errors' => $validatedData->errors()], 422);
         }
         $data = User::where('id', $id)->update($request->all());
-        return response()->json(['message' => "user updated successfully",], 200);
+        return response()->json(['status' => True,'message' => "user updated successfully",], 200);
     }
 
     /**
