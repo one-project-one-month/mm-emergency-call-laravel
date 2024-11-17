@@ -40,9 +40,9 @@ class AuthController extends Controller
             // 'password' => Hash::make($request->password)
          ]);
          return response()->json([
-            'status' => true,
+            'status' => True,
             'message'=> 'success',
-            'token'=>$user->createToken("API TOKEN")->plainTextToken
+            // 'token'=>$user->createToken("API TOKEN")->plainTextToken
         ],200);
     }
 
@@ -66,6 +66,7 @@ class AuthController extends Controller
     public function logout(Request $request) {
         $request->user()->tokens()->delete();
         return [
+            'status' => True,
             'message'=>"You are logged out",
         ];
     }
