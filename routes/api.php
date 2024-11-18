@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\ServiceProviderController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\api\EmergencyRequestController;
 
@@ -16,6 +17,8 @@ Route::prefix('v1')->group(function () {
     Route::post('logout',[AuthController::class,'logout'])->middleware('auth:sanctum');
 
     Route::apiResource('users',UserController::class);
+    Route::apiResource('serviceProviders',ServiceProviderController::class);
+    Route::get('serviceProviders/EmergencyService/{service_id}',[ServiceProviderController::class,'ServiceID']);
     Route::get('EmergencyServiceRequests', [EmergencyRequestController::class,'index']);
     Route::get('EmergencyServiceRequests/{id}', [EmergencyRequestController::class,'show']);
     Route::post('EmergencyServiceRequests', [EmergencyRequestController::class,'store']);
