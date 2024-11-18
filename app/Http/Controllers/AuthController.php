@@ -16,8 +16,8 @@ class AuthController extends Controller
         $validatedData = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'phone' => 'required|string|max:255',
-            // 'email' => 'required|string|email|max:255|unique:users',
-            // 'password' => 'required|string|min:8',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8',
             'address' => 'required|string',
             'emergency_type' => 'required|string',
             'emergency_details' => 'required',
@@ -55,11 +55,12 @@ class AuthController extends Controller
         $user=User::where('email',$request->email)->first();
         if(!$user || !Hash::check( $request->password,$user->password)){
             return response()->json([
-                'message'=>"The provided credentials are incorrect"
+                'status' => False,
+                'message'=>"The provided credentials are incorrect",
             ]);
         }
         $token=$user->createToken($user->name);
-        return response()->json(['message'=>"Login successfully",'user'=>$user,'token'=>$token->plainTextToken]);
+        return response()->json(['status' => True,'message'=>"Login successfully",'user'=>$user,'token'=>$token->plainTextToken]);
     }
 
     // logout

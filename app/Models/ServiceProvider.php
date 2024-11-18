@@ -8,7 +8,7 @@ class ServiceProvider extends Model
 {
     protected $guarded = [];
 
-    public function emergency_request(){
-        $this->hasMany(EmergencyRequest::class);
-    }
+    public function emergency_services(){
+        return $this->belongsTo(Emergencyservice::class,'service_id', 'id');
+     }
 }
