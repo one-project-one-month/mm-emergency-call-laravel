@@ -20,7 +20,7 @@ Route::prefix('v1')->group(function () {
     Route::get('EmergencyServiceRequests/{id}', [EmergencyRequestController::class,'show']);
     Route::post('EmergencyServiceRequests', [EmergencyRequestController::class,'store']);
     Route::put('EmergencyServiceRequests/{id}', [EmergencyRequestController::class,'update']);
-    Route::delete('EmergencyServiceRequests/{id}', [EmergencyRequestController::class,'destroy']);
+    // Route::delete('EmergencyServiceRequests/{id}', [EmergencyRequestController::class,'destroy']);
 
     Route::get('EmergencyServiceRequest/EmergencyService/{service_id}',[EmergencyRequestController::class,'getService']);
     Route::get('EmergencyServiceRequest/EmergencyServiceProvider/{provider_id}',[EmergencyRequestController::class,'getProvider']);

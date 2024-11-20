@@ -7,31 +7,42 @@ use Illuminate\Support\Carbon;
 use App\Models\EmergencyRequest;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Models\EmergencyService;
 use Illuminate\Support\Facades\Validator;
 
 
 class EmergencyRequestController extends Controller
 {
-    public function index(){
-        $service_request = EmergencyRequest::get();
-        return response()->json(['status'=> true, 'message' => $service_request],200);
+    public function index(Request $request)
+    {
+
+        $service_request = EmergencyRequest::query();
+        if ($request->query('status')) {
+            $service_request->where('status', $request->query('status'));
+        }
+        $request = $service_request->paginate(5);
+        return response()->json(['status' => true, 'message' => $request], 200);
     }
 
-    public function show($id){
+    public function show($id)
+    {
         $service_request = EmergencyRequest::find($id);
-        if($service_request){
+        if ($service_request) {
             return response()->json([
                 'status' => true,
-                'message' => $service_request],200);
-        }else{
+                'message' => $service_request
+            ], 200);
+        } else {
             return response()->json([
                 'status' => false,
-                'message' => 'No Emergency Service Request'],200);
+                'message' => 'No Emergency Service Request'
+            ], 200);
         }
     }
 
-    public function store(Request $request){
-        $validator = Validator::make($request->all(),[
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
             'userId' => 'required',
             'serviceId' => 'required',
             'providerId' => 'required',
@@ -39,11 +50,11 @@ class EmergencyRequestController extends Controller
             // 'status' => 'required',
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response()->json([
                 'status' => false,
                 'message' => $validator->errors()
-            ],403);
+            ], 403);
         };
 
         $emergencyRequest = new EmergencyRequest();
@@ -59,26 +70,27 @@ class EmergencyRequestController extends Controller
         $emergencyRequest->township = $request->township ?? null;
 
         $save = $emergencyRequest->save();
-        if($save){
+        if ($save) {
             return response()->json([
                 'status' => true,
                 'message' => $emergencyRequest,
-            ],200);
-        }else{
+            ], 200);
+        } else {
             return response()->json([
                 'status' => false,
                 'message' => 'update unsuccess',
-            ],203);
+            ], 203);
         }
     }
 
-    public function update($id,Request $request){
+    public function update($id, Request $request)
+    {
         $emergencyRequest = EmergencyRequest::find($id);
-        if($emergencyRequest){
+        if ($emergencyRequest['status'] == 'pending') {
             $emergencyRequest->user_id = $request->UserId ?? $emergencyRequest->user_id;
             $emergencyRequest->service_id = $request->ServiceId ?? $emergencyRequest->service_id;
             $emergencyRequest->provider_id = $request->ProviderId ?? $emergencyRequest->provider_id;
-            $emergencyRequest->request_time = $request->RequestTime ?? $emergencyRequest->request_time ;
+            $emergencyRequest->request_time = $request->RequestTime ?? $emergencyRequest->request_time;
             $emergencyRequest->status = $request->Status ?? $emergencyRequest->status;
             $emergencyRequest->response_time = $request->ResponseTime ?? $emergencyRequest->response_time;
             $emergencyRequest->notes = $request->Notes ?? $emergencyRequest->notes;
@@ -86,83 +98,101 @@ class EmergencyRequestController extends Controller
             $emergencyRequest->township = $request->Township ?? $emergencyRequest->township;
 
             $save = $emergencyRequest->save();
-            if($save){
+            if ($save) {
                 return response()->json([
                     'status' => true,
                     'message' => $emergencyRequest,
-                ],200);
-            }else{
+                ], 200);
+            } else {
                 return response()->json([
                     'status' => false,
                     'message' => 'update unsuccess',
-                ],203);
+                ], 203);
             }
-        }else{
+        } elseif ($emergencyRequest['status'] == 'approved' || $emergencyRequest['status'] == 'rejected') {
             return response()->json([
                 'status' => false,
-                'message' => 'No emergency service request',
-            ],200);
+                'message' => 'Service being approved. Unavailable to change',
+            ], 200);
         }
     }
 
-    public function destroy($id){
-        $emergencyRequest = EmergencyRequest::find($id);
-        if($emergencyRequest){
-            $emergencyRequest->delete();
+    // public function destroy($id){
+    //     $emergencyRequest = EmergencyRequest::find($id);
+    //     if($emergencyRequest){
+    //         $emergencyRequest->delete();
 
-            return response()->json([
-                'status' => true,
-                'message' => 'emergency service request delete successful',
-            ],200);
+    //         return response()->json([
+    //             'status' => true,
+    //             'message' => 'emergency service request delete successful',
+    //         ],200);
+    //     }else{
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'No emergency service request',
+    //         ],200);
+    //     }
+    // }
+
+    public function getService($service_id, Request $request)
+    {
+        // $service = EmergencyRequest::with('emergency_services')->where('service_id',$service_id)->get();
+        // $service = EmergencyService::with(['emergency_request' => function($query) {
+        //                                     $query->where('status','pending');
+        //                             }])
+        //                             ->where('id',$service_id)
+        //                             ->get();
+        $service = EmergencyService::with('emergency_request');
+        $status = $request->query('status');
+        if ($status) {
+            $service->whereHas('emergency_request', function ($query) use ($status,$service_id) {
+                $query->where('id', $service_id)->where('status', $status);
+            });
+
         }else{
-            return response()->json([
-                'status' => false,
-                'message' => 'No emergency service request',
-            ],200);
+            $service->where('id', $service_id)->get();
         }
-    }
-
-    public function getService($service_id){
-        $service = EmergencyRequest::with('emergency_services')->where('service_id',$service_id)->get();
+        $service = $service->get();
         if($service){
-           return response()->json([
+            return response()->json([
                 'status' => true,
                 'message' => $service,
-            ],200);
+            ], 200);
         }else{
             return response()->json([
                 'status' => false,
-                'message' => 'No emergency service match',
-            ],200);
+                'message' => 'No service is match',
+            ], 200);
         }
     }
 
-    public function getProvider($provider_id){
-        $provider = EmergencyRequest::with('service_providers')->where('provider_id',$provider_id)->get();
-        if($provider){
-           return response()->json([
+    public function getProvider($provider_id)
+    {
+        $provider = EmergencyRequest::with('service_providers')->where('provider_id', $provider_id)->get();
+        if ($provider) {
+            return response()->json([
                 'status' => true,
                 'message' => $provider,
-            ],200);
-        }else{
+            ], 200);
+        } else {
             return response()->json([
                 'status' => false,
                 'message' => 'No emergency provider match',
-            ],200);
+            ], 200);
         }
     }
 
-    public function updateServiceStatus(Request $request){
+    public function updateServiceStatus(Request $request)
+    {
         $service_request = $request->request_id;
         $service = EmergencyRequest::find($service_request);
-        $service->status = 'approved';
+        $service->status = $request->status;
         $service->response_time = Carbon::now();
         $service->save();
 
         return response()->json([
             'status' => true,
             'message' => $service,
-        ],200);
+        ], 200);
     }
 }
-
