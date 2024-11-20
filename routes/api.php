@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\api\EmergencyRequestController;
+use App\Http\Controllers\Api\EmergencyServiceController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -26,6 +27,12 @@ Route::prefix('v1')->group(function () {
     Route::get('EmergencyServiceRequest/EmergencyServiceProvider/{provider_id}',[EmergencyRequestController::class,'getProvider']);
 
     Route::post('EmergencyServiceRequest/update-service-status',[EmergencyRequestController::class,'updateServiceStatus']);
+
+    Route::get('emergencyServices', [EmergencyServiceController:: class, 'index']);
+    Route::post('emergencyServices', [EmergencyServiceController:: class, 'store']);
+    Route::get('emergencyServices/{id}', [EmergencyServiceController::class, 'getServiceById'])
+    ->where('id', '[0-9]+');
+    Route::get('emergencyServices/{service_type}', [EmergencyServiceController::class, 'getServiceByType']);
 });
 
 // Route::prefix('v1',function(){
