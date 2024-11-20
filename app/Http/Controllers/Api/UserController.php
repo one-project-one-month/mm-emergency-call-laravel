@@ -15,7 +15,7 @@ class UserController extends Controller
     public function index()
     {
         $user = User::all();
-        return response()->json(['data' => $user]);
+        return response()->json(['status' => True,'data' => $user]);
     }
 
     /**
@@ -44,15 +44,16 @@ class UserController extends Controller
         $user = User::where('id', $id)->first();
         if (!$user) {
             return response()->json([
+                'status' => False,
                 'message' => "User is not found",
             ], 400);
         }
 
         $validatedData = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:255',
-            // 'email' => 'required|string|email|max:255|unique:users,email,' . $id,
-            // 'password' => 'required|string|min:8',
+            'phone' => 'required|string|max:255|unique:users,phone,' . $id,
+            'email' => 'required|string|email|max:255|unique:users,email,' . $id,
+            'password' => 'required|string|min:8',
             'address' => 'required|string',
             'emergency_type' => 'required|string',
             'emergency_details' => 'required',
@@ -63,7 +64,7 @@ class UserController extends Controller
             return response()->json(['status' => false, 'message' => 'validation error', 'errors' => $validatedData->errors()], 422);
         }
         $data = User::where('id', $id)->update($request->all());
-        return response()->json(['message' => "user updated successfully",], 200);
+        return response()->json(['status' => True,'message' => "user updated successfully",], 200);
     }
 
     /**

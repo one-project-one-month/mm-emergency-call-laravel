@@ -17,10 +17,10 @@ return new class extends Migration
             $table->string('service_type');
             $table->string('service_name');
             $table->string('phone_number');
-            $table->longText('location')->nullable();
+            $table->longText('location');
             $table->enum('availability',['0','1'])->default('0');
-            $table->string('state')->nullable();
-            $table->string('township')->nullable();
+            $table->string('state');
+            $table->string('township');
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'))->nullable();
             $table->timestamp('updated_at')->nullable();
 

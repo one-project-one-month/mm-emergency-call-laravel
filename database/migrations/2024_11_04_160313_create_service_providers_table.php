@@ -15,11 +15,11 @@ return new class extends Migration
         Schema::create('service_providers', function (Blueprint $table) {
             $table->id();
             $table->string('provider_name');
-            $table->foreignId('service_id');
+            $table->foreignId('service_id')->constrained('emergency_services')->onDelete('cascade');
             $table->string('contact_number');
             $table->enum('availability',['0','1'])->default('0');
-            $table->string('state')->nullable();
-            $table->string('township')->nullable();
+            $table->string('state');
+            $table->string('township');
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'))->nullable();
             $table->timestamp('updated_at')->nullable();
         });

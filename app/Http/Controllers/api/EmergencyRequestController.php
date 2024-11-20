@@ -96,7 +96,7 @@ class EmergencyRequestController extends Controller
             $emergencyRequest->notes = $request->Notes ?? $emergencyRequest->notes;
             $emergencyRequest->state = $request->State ?? $emergencyRequest->state;
             $emergencyRequest->township = $request->Township ?? $emergencyRequest->township;
-
+            logger($emergencyRequest);
             $save = $emergencyRequest->save();
             if ($save) {
                 return response()->json([
