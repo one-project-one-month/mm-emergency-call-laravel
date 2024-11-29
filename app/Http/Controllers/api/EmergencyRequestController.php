@@ -73,12 +73,12 @@ class EmergencyRequestController extends Controller
         if ($save) {
             return response()->json([
                 'status' => true,
-                'message' => $emergencyRequest,
+                'message' => 'success',
             ], 200);
         } else {
             return response()->json([
                 'status' => false,
-                'message' => 'update unsuccess',
+                'message' => 'create request unsuccess',
             ], 203);
         }
     }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ServiceProviderController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\api\EmergencyRequestController;
+use App\Http\Controllers\api\ServiceTypeController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -29,6 +30,12 @@ Route::prefix('v1')->group(function () {
     Route::get('EmergencyServiceRequest/EmergencyServiceProvider/{provider_id}',[EmergencyRequestController::class,'getProvider']);
 
     Route::post('EmergencyServiceRequest/update-service-status',[EmergencyRequestController::class,'updateServiceStatus']);
+
+    //service type
+    Route::get('ServiceTypes', [ServiceTypeController::class,'index']);
+    Route::get('ServiceTypes/{id}', [ServiceTypeController::class,'show']);
+    Route::post('ServiceTypes', [ServiceTypeController::class,'store']);
+    Route::put('ServiceTypes/{id}', [ServiceTypeController::class,'update']);
 });
 
 // Route::prefix('v1',function(){
