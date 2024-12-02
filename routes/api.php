@@ -15,7 +15,16 @@ Route::prefix('v1')->group(function () {
     Route::post('register',[AuthController::class,'register']);
     Route::post('login',[AuthController::class,'login']);
     Route::post('logout',[AuthController::class,'logout'])->middleware('auth:sanctum');
+    Route::middleware('adminMiddleware')->group(function () {
 
+
+
+    });
+    Route::middleware('userMiddleware')->group(function () {
+
+
+        
+    });
     Route::apiResource('users',UserController::class);
     Route::apiResource('serviceProviders',ServiceProviderController::class);
     Route::get('serviceProviders/EmergencyService/{service_id}',[ServiceProviderController::class,'ServiceID']);
